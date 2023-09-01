@@ -1,8 +1,12 @@
+require('dotenv').config();
 const express = require("express");
 const routerApi = require('./server')
 
 const app = express();
-const port = 8080;
+let PORT;
+process.env.STATUS === 'production'
+  ? (PORT = process.env.PROD_PORT)
+  : (PORT = process.env.DEV_PORT)
 
 app.use(express.json())
 
@@ -12,7 +16,7 @@ app.get("/", function(request, response) {
 
 routerApi(app)
 
-app.listen(port, function() {
-  console.log("> Escuchando en puerto", port)
+app.listen(PORT, function() {
+  console.log("> Escuchando en puerto", PORT)
 })
 
