@@ -1,43 +1,63 @@
-const { faker } = require('@faker-js/faker')
 
-class ProductService {
+class CategoryService {
 
   constructor(){
-    this.products = []
-    this.generate()
+    this.categories = [
+      {
+        id: 1,
+        name: "Sneakers",
+        description: "Comfortable sneakers"
+      },
+      {
+        id: 2,
+        name: "Clothes",
+        description: "Best fashion clothes"
+      },
+      {
+        id: 3,
+        name: "Sun glasses",
+        description: "Really nice glasses"
+      }
+    ]
   }
 
-  generate() {
-    const limit = 10
-    for (let i = 0; i < limit; i++) {
-      this.products.push({
-        id: faker.string.uuid(),
-        name: faker.commerce.productName(),
-        price: parseInt(faker.commerce.price(), 10),
-        image: faker.image.url()
-    })
-  }
+  async create(data) {
+    const newCategory = {
+      id: this.categories.length,
+      ...data
+    }
+    return this.categories.push(newCategory)
   }
 
-  create() {
-
+  async find() {
+    return this.categories
   }
 
-  find() {
-    return this.products
+  async findOne(id) {
+    return this.categories.find(item => item.id === Number(id))
   }
 
-  findOne(id) {
-    return this.products.find(item => item.id === id)
+  async update(id, data) {
+    const index = this.categories.findIndex(item => item.id === id)
+    if( index === -1 ){
+      throw new Error('Category not found')
+    }
+    const categoryToUpdate = this.categories[index]
+    this.categories[index] = {
+      ...categoryToUpdate,
+      ...data
+    }
+    return this.categories[index]
   }
 
-  update() {
-
-  }
-
-  delete() {
-
+  async delete(id) {
+    const index = this.categories.findIndex(item => item.id === id)
+    if( index === -1 ){
+      throw new Error("Category not found")
+    }
+    this.categories.splice(index,1)
+    return {message :"OK"}
   }
 }
 
-module.exports = ProductService
+module.exports = CategoryService

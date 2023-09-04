@@ -14,6 +14,7 @@ class ProductService {
         id: faker.string.uuid(),
         name: faker.commerce.productName(),
         price: parseInt(faker.commerce.price(), 10),
+        category: 1,
         image: faker.image.url()
     })
   }
