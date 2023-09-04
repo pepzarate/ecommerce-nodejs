@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require("express");
 const routerApi = require('./server')
 
+const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler')
+
 const app = express();
 let PORT;
 process.env.STATUS === 'production'
@@ -15,6 +17,10 @@ app.get("/", function(request, response) {
 })
 
 routerApi(app)
+
+app.use(logErrors)
+app.use(boomErrorHandler)
+app.use(errorHandler)
 
 app.listen(PORT, function() {
   console.log("> Escuchando en puerto", PORT)

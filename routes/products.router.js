@@ -9,10 +9,14 @@ router.get("/", async function(request, response) {
   response.json(products)
 })
 
-router.get("/:id", function(request, response) {
-  const { id } = request.params
-  const product = service.findOne(id)
-  response.json(product)
+router.get("/:id", async function(request, response, next) {
+  try {
+    const { id } = request.params
+    const product = await service.findOne(id)
+    response.json(product)
+  } catch (error) {
+    next(error)
+  }
 })
 
 router.post('/', async function(request, response) {
