@@ -1,5 +1,8 @@
 const express = require("express");
 const ProductService = require('./../services/product.service')
+const validatorHandler = require('./../middlewares/validator.handler')
+const { createProductSchema, updateProductSchema, getProductSchema } = require('./../schemas/product.schema')
+
 const router = express.Router()
 
 const service = new ProductService()
@@ -9,34 +12,37 @@ router.get("/", async function(request, response) {
   response.json(products)
 })
 
-router.get("/:id", async function(request, response, next) {
-  try {
-    const { id } = request.params
-    const product = await service.findOne(id)
-    response.json(product)
-  } catch (error) {
-    next(error)
-  }
-})
+router.get("/:id",
+  validatorHandler(getProductSchema, 'params'), async function(request, response, next) {
+    try {
+      const { id } = request.params
+      const product = await service.findOne(id)
+      response.json(product)
+    } catch (error) {
+      next(error)
+    }
+  })
 
-router.post('/', async function(request, response) {
-  const body = request.body
-  const newProduct = await service.create(body)
-  response.status(201).json(newProduct)
-})
-
-router.patch('/:id', async function(request, response) {
-  try {
-    const { id } = request.params
+router.post('/',
+  validatorHandler(createProductSchema, 'body'), async function(request, response) {
     const body = request.body
-    const updatedProduct = await service.update(id, body)
-    response.json(updatedProduct)
-  } catch(err) {
-    response.status(404).json({
-      error: err.message
+    const newProduct = await service.create(body)
+    response.status(201).json(newProduct)
+  })
+
+router.patch('/:id',
+  validatorHandler(getProductSchema, 'params'),
+   validatorHandler(updateProductSchema, 'body'),
+    async function(request, response, next) {
+      try {
+        const { id } = request.params
+        const body = request.body
+        const updatedProduct = await service.update(id, body)
+        response.json(updatedProduct)
+      } catch(err) {
+        next(err)
+      }
     })
-  }
-})
 
 router.delete('/:id', async function(request, response) {
   const { id } = request.params

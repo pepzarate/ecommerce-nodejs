@@ -33,19 +33,17 @@ class ProductService {
 
   find() {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(this.products)
-      }, 5000)
+      resolve(this.products)
     })
   }
 
   async findOne(id) {
     const product = this.products.find(item => item.id === id)
     if(!product) {
-      throw boom.notFound("producto no encontrado")
+      throw boom.notFound("Product not found!")
     }
     if(product.isBlocked) {
-      throw boom.conflict('product is blocked')
+      throw boom.conflict('Product is blocked')
     }
     return product
   }
