@@ -4,7 +4,7 @@ function logErrors(error, request, response, next) {
   next(error)
 }
 
-function errorHandler(error, request, response, next) {
+function errorHandler(error, request, response) {
   console.log('errorHandler')
   response.status(500).json({
     message: error.message,
